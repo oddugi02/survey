@@ -29,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(el);
     });
 
+    // 폼 제출 후 정확히 이 페이지로 되돌아올 수 있도록 설정
+    const nextUrlInput = document.getElementById('next-url');
+    if (nextUrlInput) {
+        nextUrlInput.value = window.location.href;
+    }
+
     // 라디오 버튼 선택 시 키보드 접근성 처리(엔터로 선택)
     const radioLabels = document.querySelectorAll('.radio-label');
     radioLabels.forEach(label => {

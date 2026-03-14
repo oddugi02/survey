@@ -24,9 +24,12 @@
 
         <!-- Formsubmit 연동 -->
         <form action="https://formsubmit.co/oddugi02@gmail.com" method="POST" class="survey-form">
-            <!-- Formsubmit 셋업 (성공시 돌아올 페이지나 리디렉션, 캡챠제거 설정 등 가능) -->
+            <!-- Formsubmit 셋업 -->
             <input type="hidden" name="_subject" value="새로운 설문 응답이 도착했습니다!">
             <input type="hidden" name="_template" value="box">
+            <!-- 제출 후 돌아갈 URL을 현재 주소로 고정하기 위한 필드 -->
+            <input type="hidden" name="_next" id="next-url" value="">
+            <input type="hidden" name="_captcha" value="false">
             
             <section class="question-card fade-in-section">
                 <div class="q-header">
