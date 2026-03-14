@@ -29,10 +29,61 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(el);
     });
 
-    // 폼 제출 후 정확히 이 페이지로 되돌아올 수 있도록 설정
-    const nextUrlInput = document.getElementById('next-url');
-    if (nextUrlInput) {
-        nextUrlInput.value = window.location.href;
+    // 폼 제출을 가로채어 제출 성공 메시지로 부드럽게 전환(AJAX)
+    const form = document.getElementById('survey-form');
+    const successMessage = document.getElementById('success-message');
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // 기본 이동 방지
+            
+            const submitBtn = form.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>전송 중...</span>';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+
+            fetch('https://formsubmit.co/ajax/oddugi02@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 부드러운 전환 효과를 위해 opacity 조절
+                form.style.transition = 'opacity 0.4s ease';
+                form.style.opacity = '0';
+                
+                setTimeout(() => {
+                    form.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // 애니메이션 준비
+                    successMessage.style.opacity = '0';
+                    successMessage.style.transform = 'translateY(30px)';
+                    successMessage.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    
+                    // 리렌더링 강제 (리플로우)
+                    void successMessage.offsetWidth; 
+                    
+                    // 성공 메시지 나타남
+                    successMessage.style.opacity = '1';
+                    successMessage.style.transform = 'translateY(0)';
+                    
+                    // 화면 최상단으로 스크롤 이동
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 400);
+            })
+            .catch(error => {
+                console.error('Submission Error:', error);
+                alert('제출 중 오류가 발생했습니다. 네트워크 상태를 확인하고 다시 시도해 주세요.');
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
     }
 
     // 라디오 버튼 선택 시 키보드 접근성 처리(엔터로 선택)
